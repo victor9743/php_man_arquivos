@@ -1,6 +1,6 @@
 <?php
     //  criando uma conexão com o banco PDO MYSQL
-    $conn = new PDO("mysql:dbname=intranet_ANOREG; host=localhost", "root", "" );
+    $conn = new PDO("mysql:dbname=intranet; host=localhost", "root", "" );
 
     // 655 cartorios
     $cartorios = $conn->prepare("SELECT cc.idcartorios, cad.descricao, cc.codTj, cc.nome, cc.C_IdContribuicoes, cc.Tabnome FROM cadcartorios cc
@@ -19,14 +19,14 @@
         
         if($tipo == 1){
             //tj
-            $conn = new PDO("mysql:dbname=intranet_ANOREG; host=localhost", "root", "" );
+            $conn = new PDO("mysql:dbname=intranet; host=localhost", "root", "" );
             $valor = $conn->prepare("SELECT CT.Valor FROM cadcartorios CC JOIN finconttj_cartorios CT ON CT.V_Idcartorios = CC.IdCartorios WHERE CC.IdCartorios = ".$id." ORDER BY periodo DESC ;");
             
             $valor->execute();
             $res = [];
             $res =  $valor->fetchAll();
           
-            if (!isset($res[0])) return "Cartorio Sem Associado";
+            if (!isset($res[0])) return "Sem Associado";
             
             if ($res[0]["Valor"] > 0) {
                 return "Adimplente";
@@ -35,12 +35,12 @@
             }
         } else {
             //anoreg
-            $conn = new PDO("mysql:dbname=intranet_ANOREG; host=localhost", "root", "" );
+            $conn = new PDO("mysql:dbname=intranet; host=localhost", "root", "" );
             $valor = $conn->prepare("SELECT CT.ValorPago FROM cadcartorios CC JOIN finboletos CT ON CT.B_Idcartorios = CC.IdCartorios WHERE CC.IdCartorios = ".$id." ORDER BY CT.dataDocumento DESC ;");
             $valor->execute();
             $res = [];
             $res =  $valor->fetchAll();
-            if (!isset($res[0])) return "Cartorio Sem Associado";
+            if (!isset($res[0])) return "Sem Associado";
             
             if ($res[0]["ValorPago"] > 0) {
                 return "Adimplente";
@@ -62,22 +62,20 @@
 <body>
     <table class="table" border="1">
         <thead>
-            <th>Cidade</th>
-            <th>Cod.Tj</th>
-            <th>Cartorios</th>
-            <th>Tipo Cotrib</th>
-            <th>Situacao</th>
+            <!--<th>Cidade</th>-->
+            <!--<th>Cartorios</th>-->
+            <!--<th>Tipo Cotrib</th>-->
+            <!--<th>Situacao</th>-->
             <th>Associados</th>
         </thead>
         <tbody>
             <?php for($i = 0; $i< count($results); $i++) {?>              
                 <tr>
-                    <td><?= $results[$i]["descricao"]?></td>
-                    <td><?= $results[$i]["codTj"]?></td>
-                    <td><?= $results[$i]["nome"]?></td>
-                    <td><?= $results[$i]["C_IdContribuicoes"] == 1 ? "Contrib TJ" : "Contrib Bol"?></td>
-                    <td><?= situacao($results[$i]["C_IdContribuicoes"], $results[$i]["idcartorios"]); ?></td>
-                    <td><?= situacao($results[$i]["C_IdContribuicoes"], $results[$i]["idcartorios"])== "Cartorio Sem Associado"? '': $results[$i]["Tabnome"]?></td>
+                    <!--<td><?#= $results[$i]["descricao"]?></td>-->
+                    <!--<td><?#= $results[$i]["codTj"]?> - <?#= $results[$i]["nome"]?></td>-->
+                    <!--<td><?#= $results[$i]["C_IdContribuicoes"] == 1 ? "Contrib TJ" : "Contrib Bol"?></td>-->
+                    <!--<td><?#= situacao($results[$i]["C_IdContribuicoes"], $results[$i]["idcartorios"]); ?></td>-->
+                    <td><?= situacao($results[$i]["C_IdContribuicoes"], $results[$i]["idcartorios"])== "Sem Associado"? 'ZZZ': $results[$i]["Tabnome"]?></td>
                 </tr>
                 
             <?php } ?>
